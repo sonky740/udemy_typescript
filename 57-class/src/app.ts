@@ -1,87 +1,46 @@
-class Department {
-  // private readonly id : string;
-  // private name: string;
-  protected employees: string[] = [];
+interface AddFn {
+  (a: number, b: number): number;
+}
 
-  constructor(private readonly id: string, private name: string) {
-    // this.name = n;
+let add: AddFn;
+
+add = (n1: number, n2: number) => {
+  return n1 + n2;
+};
+
+interface Named {
+  readonly name?: string;
+  outputName?: string;
+}
+
+// 인터페이스는 객체의 구조를 설명하기 위해서만 사용.
+// 타입이 더 유연할 순 있지만 인터페이스가 좀 더 깔끔함.
+interface Greetable extends Named {
+  greet(phrase: string): void;
+}
+
+class Person implements Greetable {
+  name?: string;
+  age = 30;
+
+  constructor(n?: string) {
+    if (n) {
+      this.name = n;
+    }
   }
 
-  describe(this: Department) {
-    console.log(`Department (${this.id}): ${this.name}`);
-  }
-
-  addEmployee(employee: string) {
-    this.employees.push(employee);
-  }
-
-  printEmployeeInformation() {
-    console.log(this.employees.length);
-    console.log(this.employees);
+  greet(phrase: string) {
+    if (this.name) {
+      console.log(`${phrase} this.name`);
+    } else {
+      console.log('Hi!');
+    }
   }
 }
 
-class ITDepartment extends Department {
-  constructor(id: string, public admins: string[]) {
-    super(id, 'IT');
-  }
-}
+let user1: Greetable;
 
-class AccountingDepartment extends Department {
-  private lastReport: string;
+user1 = new Person('Max');
 
-  get mostRecentReport() {
-    if (this.lastReport) {
-      return this.lastReport;
-    }
-    throw new Error('No report found.');
-  }
-
-  set mostRecentReport(value: string) {
-    if (!value) {
-      throw new Error('Please pass in a valid value!');
-    }
-    this.addReport(value);
-  }
-
-  constructor(id: string, private reports: string[]) {
-    super(id, 'Accounting');
-    this.lastReport = reports[0];
-  }
-
-  addEmployee(name: string) {
-    if (name === 'Max') {
-      return;
-    }
-    this.employees.push(name);
-  }
-
-  addReport(text: string) {
-    this.reports.push(text);
-    this.lastReport = text;
-  }
-
-  printReports() {
-    console.log(this.reports);
-  }
-}
-
-const it = new ITDepartment('d1', ['Max']);
-
-it.addEmployee('Max');
-it.addEmployee('Manu');
-
-it.describe();
-it.printEmployeeInformation();
-
-const accounting = new AccountingDepartment('d2', []);
-
-accounting.mostRecentReport = 'lorem';
-accounting.addReport('Something went wrong...');
-console.log(accounting.mostRecentReport);
-
-accounting.addEmployee('Max');
-accounting.addEmployee('Manu');
-
-accounting.printReports();
-accounting.printEmployeeInformation();
+user1.greet('Hi there - I am');
+console.log(user1);
